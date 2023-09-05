@@ -46,18 +46,16 @@ TEMPLATE="$(envsubst < ./template.md)"
 
 # Post results to GitHub if this is a pull request 
 if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
+  # Check if we have a GitHub token
+    if [ -z "${GITHUB_TOKEN}" ]; then
+        echo "No GitHub token found, exiting..."
+        exit 1
+    fi
   echo "Posting results to GitHub..."
-  # PAYLOAD="$(echo "${TEMPLATE}" | jq -R --slurp '{body: .}')"
-  PAYLOAD='{"body": "foo bar baz"}'
+  PAYLOAD="$(echo "${TEMPLATE}" | jq -R --slurp '{body: .}')"
   URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${GITHUB_REF}/comments"
-  #echo "${PAYLOAD}" | curl -L -X POST -d @- -H "Authorization: Bearer ${GITHUB_REF}" -H "Content-Type: application/json" "${URL}"
-  curl -L \
-  -X POST \
-  -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer ${GITHUB_REF}" \
-  -H "X-GitHub-Api-Version: 2022-11-28" \
-  https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${GITHUB_REF}/comments \
-  -d '{"body":"Me too"}'
+  echo "${PAYLOAD}" | curl -L -X POST -d @- -H "Authorization: Bearer ${GITHUB_REF}" -H "Content-Type: application/json" "${URL}"
+
 else
     echo "Not a pull request, skipping posting results to GitHub."
     # Echo JSON to stdout
