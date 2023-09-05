@@ -1,0 +1,7 @@
+name: Dive action
+description: This repository contains a GitHub action that runs wagoodman/dive on a Docker image and posts the results as a comment on the PR.
+runs:
+  using: "composite"
+  steps:
+    - run: $GITHUB_ACTION_PATH/run.sh
+      shell: bash
