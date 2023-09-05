@@ -27,9 +27,10 @@ dive "${IMAGE_NAME}" -j "${RUNNER_TEMP}/dive_output.json"
 
 # Assign results to env vars
 DIVE_IMAGE_NAME="${IMAGE_NAME}"
-DIVE_IMAGE_TOTAL_SIZE="$(jq -r '.image.sizeBytes' "${RUNNER_TEMP}/dive_output.json")"
-DIVE_IMAGE_INEFFICIENT_BYTES="$(jq -r '.image.inefficientBytes' "${RUNNER_TEMP}/dive_output.json")" 
+DIVE_IMAGE_TOTAL_SIZE="$(jq -r '.image.sizeBytes' "${RUNNER_TEMP}/dive_output.json" | numfmt --to=iec-i --suffix=B --format="%.2f")"
+DIVE_IMAGE_INEFFICIENT_BYTES="$(jq -r '.image.inefficientBytes' "${RUNNER_TEMP}/dive_output.json" | numfmt --to=iec-i --suffix=B --format="%.2f")" 
 DIVE_IMAGE_EFFICIENCY_SCORE="$(jq -r '.image.efficiencyScore' "${RUNNER_TEMP}/dive_output.json")"
+DIVE_IMAGE_EFFICIENCY_PERCENT=$(awk -v num="$DIVE_IMAGE_EFFICIENCY_SCORE" 'BEGIN { printf "%.2f%%\n", num * 100 }')
 DIVE_IMAGE_TOTAL_LAYERS="$(jq -r '.layer | length' "${RUNNER_TEMP}/dive_output.json")"
 DIVE_IMAGE_JSON="$(cat "${RUNNER_TEMP}/dive_output.json")"
 
@@ -37,7 +38,7 @@ DIVE_IMAGE_JSON="$(cat "${RUNNER_TEMP}/dive_output.json")"
 export DIVE_IMAGE_NAME
 export DIVE_IMAGE_TOTAL_SIZE
 export DIVE_IMAGE_INEFFICIENT_BYTES
-export DIVE_IMAGE_EFFICIENCY_SCORE
+export DIVE_IMAGE_EFFICIENCY_PERCENT
 export DIVE_IMAGE_TOTAL_LAYERS
 export DIVE_IMAGE_JSON
 
