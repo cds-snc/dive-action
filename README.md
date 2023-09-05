@@ -11,6 +11,12 @@ The action is configured using environment variables. The following variables ar
 | `GITHUB_TOKEN` | The GitHub token to use to post the comment. |
 | `IMAGE_NAME` | The name of the Docker image to run `dive` on. |
 
+The following variables are optional:
+
+| Variable | Description |
+|--|--|
+| `DIVE_VERSION` | The version of `dive` to use. Defaults to `0.11.0`. |
+
 ## Example usage
 
 ```yaml
