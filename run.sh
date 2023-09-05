@@ -3,7 +3,12 @@ set -e # Exit with nonzero exit code if anything fails
 
 BIN_DIR="${BIN_DIR:-/usr/local/bin}"
 RUNNER_TEMP="${RUNNER_TEMP:-/tmp}"
-IMAGE_NAME="${IMAGE_NAME:-nginx:latest}"
+
+# Check if we have an image name
+if [ -z "${IMAGE_NAME}" ]; then
+    echo "No image name found, exiting..."
+    exit 1
+fi
 
 # Set version
 DIVE_VERSION="${DIVE_VERSION:-0.11.0}"
