@@ -53,7 +53,8 @@ if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
     fi
   echo "Posting results to GitHub..."
   #PAYLOAD="$(echo "${TEMPLATE}" | jq -R --slurp '{body: .}')"
-  URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${GITHUB_REF}/comments"
+  ISSUE_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+  URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${ISSUE_NUMBER}/comments"
   echo "URL: ${URL}"
   PAYLOAD='{
     "body": "foo"
