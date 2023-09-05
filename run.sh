@@ -47,7 +47,8 @@ TEMPLATE="$(envsubst < ./template.md)"
 # Post results to GitHub if this is a pull request 
 if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
   echo "Posting results to GitHub..."
-  PAYLOAD="$(echo "${TEMPLATE}" | jq -R --slurp '{body: .}')"
+  # PAYLOAD="$(echo "${TEMPLATE}" | jq -R --slurp '{body: .}')"
+  PAYLOAD='{"body": "foo bar baz"}'
   URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${GITHUB_REF}/comments"
   echo "${PAYLOAD}" | curl -L -X POST -d @- -H "Authorization: Bearer ${GITHUB_TOKEN}" -H "Content-Type: application/json" "${URL}"
 else
