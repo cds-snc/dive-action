@@ -50,4 +50,8 @@ if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
   PAYLOAD="$(echo "${TEMPLATE}" | jq -R --slurp '{body: .}')"
   URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${GITHUB_REF}/comments"
   echo "${PAYLOAD}" | curl -s -S -H "Authorization: token ${GITHUB_TOKEN}" -d @- "${URL}" > /dev/null
+else
+    echo "Not a pull request, skipping posting results to GitHub."
+    # Echo JSON to stdout
+    echo "$DIVE_IMAGE_JSON"
 fi
