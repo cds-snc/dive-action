@@ -52,13 +52,9 @@ if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
         exit 1
     fi
   echo "Posting results to GitHub..."
-  #PAYLOAD="$(echo "${TEMPLATE}" | jq -R --slurp '{body: .}')"
+  PAYLOAD="$(echo "${TEMPLATE}" | jq -R --slurp '{body: .}')"
   ISSUE_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
   URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${ISSUE_NUMBER}/comments"
-  echo "URL: ${URL}"
-  PAYLOAD='{
-    "body": "foo"
-  }'
   echo "${PAYLOAD}" | curl -L -X POST -d @- -H "Authorization: Bearer ${GITHUB_TOKEN}" -H "Content-Type: application/json" "${URL}"
 
 else
