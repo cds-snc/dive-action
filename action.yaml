@@ -5,5 +5,3 @@ runs:
   steps:
     - run: $GITHUB_ACTION_PATH/run.sh
       shell: bash
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
