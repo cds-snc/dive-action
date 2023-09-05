@@ -1,4 +1,4 @@
-## Dive image results
+### Dive image results for `${DIVE_IMAGE_NAME}`
 
 | | |
 | --- | --- |
