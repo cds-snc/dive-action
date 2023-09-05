@@ -83,4 +83,3 @@ else
     # Echo JSON to stdout
     echo "$DIVE_IMAGE_JSON"
 fi
-echo $TEMPLATE
