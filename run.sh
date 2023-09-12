@@ -48,22 +48,17 @@ export DIVE_IMAGE_TOTAL_LAYERS
 export DIVE_IMAGE_JSON
 
 # envsubst template
-TEMPLATE="### Dive image results for \`${DIVE_IMAGE_NAME}\`
-
-| | |
-| --- | --- |
-| Image | \`${DIVE_IMAGE_NAME}\` |
-| Total Size | \`${DIVE_IMAGE_TOTAL_SIZE}\` |
-| Inefficient Bytes | \`${DIVE_IMAGE_INEFFICIENT_BYTES}\` |
-| Efficiency Percentage | \`${DIVE_IMAGE_EFFICIENCY_PERCENT}\` |
-| Total Layers | \`${DIVE_IMAGE_TOTAL_LAYERS}\` |
-
-<details>
-<summary>Show full output</summary>
-
-\`\`\`json
-${DIVE_IMAGE_JSON}
-\`\`\`"
+TEMPLATE="### Dive image results for \`${DIVE_IMAGE_NAME}\`\n
+\n
+| | |\n
+| --- | --- |\n
+| Image | \`${DIVE_IMAGE_NAME}\` |\n
+| Total Size | \`${DIVE_IMAGE_TOTAL_SIZE}\` |\n
+| Inefficient Bytes | \`${DIVE_IMAGE_INEFFICIENT_BYTES}\` |\n
+| Efficiency Percentage | \`${DIVE_IMAGE_EFFICIENCY_PERCENT}\` |\n
+| Total Layers | \`${DIVE_IMAGE_TOTAL_LAYERS}\` |\n
+\n
+See the PR run for more details"
 
 # Post results to GitHub if this is a pull request 
 if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
@@ -73,13 +68,9 @@ if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
         exit 1
     fi
   echo "Posting results to GitHub..."
-  PAYLOAD="$(echo "${TEMPLATE}" | jq -R --slurp '{body: .}')"
+  PAYLOAD="{\"body\": \"${TEMPLATE}\"}"
   ISSUE_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
   URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${ISSUE_NUMBER}/comments"
   echo "${PAYLOAD}" | curl -s -S -H "Authorization: Bearer ${GITHUB_TOKEN}" --header "Content-Type: application/json" --data @- "${URL}" > /dev/null
-
-else
-    echo "Not a pull request, skipping posting results to GitHub."
-    # Echo JSON to stdout
-    echo "$DIVE_IMAGE_JSON"
 fi
+echo "$DIVE_IMAGE_JSON"
