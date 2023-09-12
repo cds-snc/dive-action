@@ -10,12 +10,6 @@ if [ -z "${IMAGE_NAME}" ]; then
     exit 1
 fi
 
-process_template() {
-  while IFS= read -r line; do
-    echo "${line//\"/\\\"}"
-  done
-}
-
 # Set version
 DIVE_VERSION="${DIVE_VERSION:-0.11.0}"
 
@@ -64,12 +58,10 @@ TEMPLATE="### Dive image results for \`${DIVE_IMAGE_NAME}\`
 | Efficiency Percentage | \`${DIVE_IMAGE_EFFICIENCY_PERCENT}\` |
 | Total Layers | \`${DIVE_IMAGE_TOTAL_LAYERS}\` |
 
-<details>
-<summary>Show full output</summary>
+See the PR run for more details
+"
 
-\`\`\`json
-${DIVE_IMAGE_JSON}
-\`\`\`"
+echo $TEMPLATE
 
 # Post results to GitHub if this is a pull request 
 if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
@@ -79,14 +71,10 @@ if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
         exit 1
     fi
   echo "Posting results to GitHub..."
-  ESCAPED_TEMPLATE=$(process_template <<< "$TEMPLATE")
-  PAYLOAD="{\"body\": \"${ESCAPED_TEMPLATE}\"}" > output.json
+  PAYLOAD="{\"body]\": \"${TEMPLATE}\"}"
   ISSUE_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
   URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${ISSUE_NUMBER}/comments"
   echo "${PAYLOAD}" | curl -s -S -H "Authorization: Bearer ${GITHUB_TOKEN}" --header "Content-Type: application/json" --data @- "${URL}" > /dev/null
-
-else
-    echo "Not a pull request, skipping posting results to GitHub."
-    # Echo JSON to stdout
-    echo "$DIVE_IMAGE_JSON"
 fi
+
+echo "$DIVE_IMAGE_JSON"
