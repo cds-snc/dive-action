@@ -10,6 +10,12 @@ if [ -z "${IMAGE_NAME}" ]; then
     exit 1
 fi
 
+process_template() {
+  while IFS= read -r line; do
+    echo "${line//\"/\\\"}"
+  done
+}
+
 # Set version
 DIVE_VERSION="${DIVE_VERSION:-0.11.0}"
 
@@ -73,7 +79,8 @@ if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
         exit 1
     fi
   echo "Posting results to GitHub..."
-  PAYLOAD="$(echo "${TEMPLATE}" | jq -R --slurp '{body: .}')"
+  ESCAPED_TEMPLATE=$(process_template <<< "$TEMPLATE")
+  PAYLOAD="{\"body\": \"${ESCAPED_TEMPLATE}\"}" > output.json
   ISSUE_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
   URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${ISSUE_NUMBER}/comments"
   echo "${PAYLOAD}" | curl -s -S -H "Authorization: Bearer ${GITHUB_TOKEN}" --header "Content-Type: application/json" --data @- "${URL}" > /dev/null
