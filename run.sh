@@ -61,8 +61,6 @@ TEMPLATE="### Dive image results for \`${DIVE_IMAGE_NAME}\`
 See the PR run for more details
 "
 
-echo $TEMPLATE
-
 # Post results to GitHub if this is a pull request 
 if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
   # Check if we have a GitHub token
@@ -71,10 +69,9 @@ if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
         exit 1
     fi
   echo "Posting results to GitHub..."
-  PAYLOAD="{\"body]\": \"${TEMPLATE}\"}"
+  PAYLOAD="{\"body\": \"${TEMPLATE}\"}"
   ISSUE_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
   URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/issues/${ISSUE_NUMBER}/comments"
   echo "${PAYLOAD}" | curl -s -S -H "Authorization: Bearer ${GITHUB_TOKEN}" --header "Content-Type: application/json" --data @- "${URL}" > /dev/null
 fi
-
 echo "$DIVE_IMAGE_JSON"
