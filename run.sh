@@ -48,18 +48,17 @@ export DIVE_IMAGE_TOTAL_LAYERS
 export DIVE_IMAGE_JSON
 
 # envsubst template
-TEMPLATE="### Dive image results for \`${DIVE_IMAGE_NAME}\`
-
-| | |
-| --- | --- |
-| Image | \`${DIVE_IMAGE_NAME}\` |
-| Total Size | \`${DIVE_IMAGE_TOTAL_SIZE}\` |
-| Inefficient Bytes | \`${DIVE_IMAGE_INEFFICIENT_BYTES}\` |
-| Efficiency Percentage | \`${DIVE_IMAGE_EFFICIENCY_PERCENT}\` |
-| Total Layers | \`${DIVE_IMAGE_TOTAL_LAYERS}\` |
-
-See the PR run for more details
-"
+TEMPLATE="### Dive image results for \`${DIVE_IMAGE_NAME}\`\n
+\n
+| | |\n
+| --- | --- |\n
+| Image | \`${DIVE_IMAGE_NAME}\` |\n
+| Total Size | \`${DIVE_IMAGE_TOTAL_SIZE}\` |\n
+| Inefficient Bytes | \`${DIVE_IMAGE_INEFFICIENT_BYTES}\` |\n
+| Efficiency Percentage | \`${DIVE_IMAGE_EFFICIENCY_PERCENT}\` |\n
+| Total Layers | \`${DIVE_IMAGE_TOTAL_LAYERS}\` |\n
+\n
+See the PR run for more details"
 
 # Post results to GitHub if this is a pull request 
 if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
